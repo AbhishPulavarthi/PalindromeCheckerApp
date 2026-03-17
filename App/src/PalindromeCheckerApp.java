@@ -5,20 +5,17 @@ interface PalindromeStrategy {
     boolean isPalindrome(String input);
 }
 
-// Stack आधारित strategy
+// Stack Strategy
 class StackStrategy implements PalindromeStrategy {
-
     public boolean isPalindrome(String input) {
-        String normalized = input.toLowerCase().replaceAll("\\s+", "");
+        String str = input.toLowerCase().replaceAll("\\s+", "");
         Stack<Character> stack = new Stack<>();
 
-        // Push all characters
-        for (char ch : normalized.toCharArray()) {
+        for (char ch : str.toCharArray()) {
             stack.push(ch);
         }
 
-        // Compare while popping
-        for (char ch : normalized.toCharArray()) {
+        for (char ch : str.toCharArray()) {
             if (ch != stack.pop()) {
                 return false;
             }
@@ -27,19 +24,16 @@ class StackStrategy implements PalindromeStrategy {
     }
 }
 
-// Deque आधारित strategy
+// Deque Strategy
 class DequeStrategy implements PalindromeStrategy {
-
     public boolean isPalindrome(String input) {
-        String normalized = input.toLowerCase().replaceAll("\\s+", "");
+        String str = input.toLowerCase().replaceAll("\\s+", "");
         Deque<Character> deque = new ArrayDeque<>();
 
-        // Add all characters
-        for (char ch : normalized.toCharArray()) {
+        for (char ch : str.toCharArray()) {
             deque.addLast(ch);
         }
 
-        // Compare front & rear
         while (deque.size() > 1) {
             if (!deque.removeFirst().equals(deque.removeLast())) {
                 return false;
@@ -49,17 +43,18 @@ class DequeStrategy implements PalindromeStrategy {
     }
 }
 
-// Context class
-class PalindromeContext {
-    private PalindromeStrategy strategy;
+// Recursive Strategy
+class RecursiveStrategy implements PalindromeStrategy {
 
-    // Inject strategy
-    public void setStrategy(PalindromeStrategy strategy) {
-        this.strategy = strategy;
+    public boolean isPalindrome(String input) {
+        String str = input.toLowerCase().replaceAll("\\s+", "");
+        return check(str, 0, str.length() - 1);
     }
 
-    public boolean execute(String input) {
-        return strategy.isPalindrome(input);
+    private boolean check(String str, int start, int end) {
+        if (start >= end) return true;
+        if (str.charAt(start) != str.charAt(end)) return false;
+        return check(str, start + 1, end - 1);
     }
 }
 
@@ -67,34 +62,35 @@ class PalindromeContext {
 public class PalindromeCheckerApp {
 
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
-        PalindromeContext context = new PalindromeContext();
 
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        System.out.println("Choose Strategy:");
-        System.out.println("1. Stack Strategy");
-        System.out.println("2. Deque Strategy");
+        // List of strategies
+        List<PalindromeStrategy> strategies = Arrays.asList(
+                new StackStrategy(),
+                new DequeStrategy(),
+                new RecursiveStrategy()
+        );
 
-        int choice = scanner.nextInt();
+        String[] names = {"Stack Strategy", "Deque Strategy", "Recursive Strategy"};
 
-        // Dynamic strategy selection
-        if (choice == 1) {
-            context.setStrategy(new StackStrategy());
-        } else if (choice == 2) {
-            context.setStrategy(new DequeStrategy());
-        } else {
-            System.out.println("Invalid choice. Using Stack Strategy by default.");
-            context.setStrategy(new StackStrategy());
-        }
+        System.out.println("\nPerformance Comparison:\n");
 
-        boolean result = context.execute(input);
+        for (int i = 0; i < strategies.size(); i++) {
 
-        if (result) {
-            System.out.println("The string is a palindrome.");
-        } else {
-            System.out.println("The string is not a palindrome.");
+            long startTime = System.nanoTime();
+
+            boolean result = strategies.get(i).isPalindrome(input);
+
+            long endTime = System.nanoTime();
+
+            long duration = endTime - startTime;
+
+            System.out.println(names[i] + ": " + result +
+                    " | Time taken: " + duration + " ns");
         }
 
         scanner.close();
