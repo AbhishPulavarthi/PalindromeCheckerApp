@@ -1,15 +1,15 @@
 import java.util.Scanner;
 
-public class PalindromeCheckerApp {
+public class UseCase10PalindromeCheckerApp {
 
-    // Recursive method to check palindrome
+    // Recursive palindrome check
     public static boolean isPalindrome(String str, int start, int end) {
-        // Base condition: if pointers cross or meet
+        // Base condition
         if (start >= end) {
             return true;
         }
 
-        // If characters at start and end don't match
+        // Compare characters
         if (str.charAt(start) != str.charAt(end)) {
             return false;
         }
@@ -24,11 +24,16 @@ public class PalindromeCheckerApp {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
+        // 🔹 Normalize string:
+        // 1. Convert to lowercase
+        // 2. Remove spaces using regex
+        String normalized = input.toLowerCase().replaceAll("\\s+", "");
+
         // Call recursive function
-        boolean result = isPalindrome(input, 0, input.length() - 1);
+        boolean result = isPalindrome(normalized, 0, normalized.length() - 1);
 
         if (result) {
-            System.out.println("The string is a palindrome.");
+            System.out.println("The string is a palindrome (ignoring case and spaces).");
         } else {
             System.out.println("The string is not a palindrome.");
         }
