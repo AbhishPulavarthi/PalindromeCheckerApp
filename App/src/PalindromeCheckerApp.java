@@ -1,9 +1,19 @@
 import java.util.Scanner;
 
-public class PalindromeCheckerApp {
+// Service class encapsulating palindrome logic
+class PalindromeChecker {
 
-    // Recursive palindrome check
-    public static boolean isPalindrome(String str, int start, int end) {
+    // Public method to check palindrome
+    public boolean checkPalindrome(String input) {
+        // Normalize string (ignore case & spaces)
+        String normalized = input.toLowerCase().replaceAll("\\s+", "");
+
+        // Use internal helper (recursion)
+        return isPalindrome(normalized, 0, normalized.length() - 1);
+    }
+
+    // Private helper method (encapsulation)
+    private boolean isPalindrome(String str, int start, int end) {
         // Base condition
         if (start >= end) {
             return true;
@@ -17,6 +27,10 @@ public class PalindromeCheckerApp {
         // Recursive call
         return isPalindrome(str, start + 1, end - 1);
     }
+}
+
+// Main application class
+public class PalindromeCheckerApp {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -24,16 +38,14 @@ public class PalindromeCheckerApp {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        // 🔹 Normalize string:
-        // 1. Convert to lowercase
-        // 2. Remove spaces using regex
-        String normalized = input.toLowerCase().replaceAll("\\s+", "");
+        // Create object of service class
+        PalindromeChecker checker = new PalindromeChecker();
 
-        // Call recursive function
-        boolean result = isPalindrome(normalized, 0, normalized.length() - 1);
+        // Call service method
+        boolean result = checker.checkPalindrome(input);
 
         if (result) {
-            System.out.println("The string is a palindrome (ignoring case and spaces).");
+            System.out.println("The string is a palindrome.");
         } else {
             System.out.println("The string is not a palindrome.");
         }
